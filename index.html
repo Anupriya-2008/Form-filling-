@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animated Form</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(45deg, #6b6bff, #6be5ff);
+      animation: gradientBackground 8s infinite alternate;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+    }
+
+    h3 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    /* Form Container */
+    form {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      width: 300px;
+    }
+
+    label {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 5px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+      font-size: 1rem;
+    }
+
+    input:focus {
+      outline: none;
+      border: 2px solid #00c6ff;
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      background: linear-gradient(45deg, #00c6ff, #0072ff);
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.4s ease-in-out;
+    }
+
+    button:hover {
+      background: linear-gradient(45deg, #0072ff, #00c6ff);
+    }
+
+    /* Success Message Styles */
+    .success-message {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+      padding: 10px;
+      background: #4caf50;
+      border-radius: 5px;
+      color: white;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    /* Error Message Styles */
+    .error-message {
+      color: #ff4d4d;
+      font-size: 0.9rem;
+      text-align: center;
+      display: none;
+    }
+
+    /* Animations */
+    @keyframes gradientBackground {
+      from {
+        background: linear-gradient(45deg, #6b6bff, #6be5ff);
+      }
+      to {
+        background: linear-gradient(45deg, #6be5ff, #ff8c6b);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <form id="form">
+    <h3>Submit Your Details</h3>
+
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" placeholder="Enter your name" required>
+
+    <label for="mobile">Mobile:</label>
+    <input type="text" id="mobile" name="mobile" placeholder="Enter your mobile number" required>
+
+    <button type="submit">Submit</button>
+    <p class="error-message" id="error-message"></p>
+  </form>
+
+  <!-- Success Message -->
+  <div class="success-message" id="success-message">
+    <p>🎉 Your data has been submitted successfully!</p>
+  </div>
+
+  <script>
+    // JavaScript to handle form submission and interactions
+    const form = document.getElementById('form');
+    const errorMessage = document.getElementById('error-message');
+    const successMessage = document.getElementById('success-message');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault(); // Prevent the default form submission behavior
+
+      // Clear previous error messages
+      errorMessage.style.display = 'none';
+
+      // Validate inputs
+      const name = document.getElementById('name').value.trim();
+      const mobile = document.getElementById('mobile').value.trim();
+
+      if (!name || !mobile) {
+        errorMessage.textContent = "All fields are required!";
+        errorMessage.style.display = 'block';
+        return;
+      }
+
+      if (!/^\d{10}$/.test(mobile)) {
+        errorMessage.textContent = "Please enter a valid 10-digit mobile number!";
+        errorMessage.style.display = 'block';
+        return;
+      }
+
+      // Display success message
+      successMessage.style.display = 'block';
+
+      // Simulate data submission to the server
+      fetch("https://script.google.com/macros/s/AKfycbwzTPgSsC7R9DrSaxtGMr205Q19t6PQmVLKzNvQcgktDBfDHpJO-Qe0X5XI5yYNpt0O/exec", {
+        method: 'POST',
+        body: new FormData(form),
+      })
+        .then((response) => response.text())
+        .then((data) => {
+          console.log("Server Response:", data);
+          // Reset form for new data entry
+          form.reset();
+          successMessage.innerHTML = `<p>🎉 Your data has been submitted successfully!</p>`;
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          successMessage.innerHTML = `<p>❌ Submission failed. Please try again!</p>`;
+        });
+
+      // Clear success message after 3 seconds
+      setTimeout(() => {
+        successMessage.style.display = 'none';
+      }, 3000);
+    });
+  </script>
+</body>
+</html>
